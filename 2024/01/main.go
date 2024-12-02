@@ -23,13 +23,13 @@ func CalculateSimilarity(left []int, right []int) int {
 		similarities = append(similarities, left[i]*similarity)
 	}
 
-	totalSimilarity := 0
+	total := 0
 
 	for _, similarity := range similarities {
-		totalSimilarity += similarity
+		total += similarity
 	}
 
-	return totalSimilarity
+	return total
 }
 
 func CalculateDistance(left []int, right []int) int {
@@ -53,13 +53,13 @@ func CalculateDistance(left []int, right []int) int {
 		distances = append(distances, distance)
 	}
 
-	totalDistance := 0
+	total := 0
 
 	for _, distance := range distances {
-		totalDistance += distance
+		total += distance
 	}
 
-	return totalDistance
+	return total
 }
 
 func main() {
