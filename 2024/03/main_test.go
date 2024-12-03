@@ -1,25 +1,9 @@
 package main
 
 import (
+	"reflect"
 	"testing"
 )
-
-func equal(a, b [][]int) bool {
-	if len(a) != len(b) {
-		return false
-	}
-	for i := range a {
-		if len(a[i]) != len(b[i]) {
-			return false
-		}
-		for j := range a[i] {
-			if a[i][j] != b[i][j] {
-				return false
-			}
-		}
-	}
-	return true
-}
 
 func TestFixCorruptedLine(t *testing.T) {
 	tests := []struct {
@@ -31,7 +15,7 @@ func TestFixCorruptedLine(t *testing.T) {
 
 	for _, test := range tests {
 		result := FixCorruptedLine(test.input)
-		if !equal(result, test.expected) {
+		if !reflect.DeepEqual(result, test.expected) {
 			t.Errorf("FixCorruptedLine(%v) = %v; want %v", test.input, result, test.expected)
 		}
 	}
@@ -46,7 +30,7 @@ func TestFixCorruptedLineConditional(t *testing.T) {
 
 	for _, test := range tests {
 		result := FixCorruptedLineConditional(test.input)
-		if !equal(result, test.expected) {
+		if !reflect.DeepEqual(result, test.expected) {
 			t.Errorf("FixCorruptedLineConditional(%v) = %v; want %v", test.input, result, test.expected)
 		}
 	}
