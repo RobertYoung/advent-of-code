@@ -2,8 +2,9 @@ package main
 
 import (
 	"fmt"
-	"os"
 	"strings"
+
+	"github.com/RobertYoung/advent-of-code/util"
 )
 
 func reverseString(s string) string {
@@ -247,14 +248,7 @@ func FindXPattern(lines []string, word string) int {
 }
 
 func main() {
-	bytes, err := os.ReadFile("input.txt")
-
-	if err != nil {
-		fmt.Println("Error opening file:", err)
-		return
-	}
-
-	file := string(bytes)
+	file, _ := util.ReadFileAsString("input.txt")
 	lines := strings.Split(file, "\n")
 	part1Count := FindWord(lines, "XMAS")
 	part2Count := FindXPattern(lines, "MAS")

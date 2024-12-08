@@ -2,10 +2,11 @@ package main
 
 import (
 	"fmt"
-	"os"
 	"slices"
 	"strconv"
 	"strings"
+
+	"github.com/RobertYoung/advent-of-code/util"
 )
 
 type PageRule struct {
@@ -70,14 +71,7 @@ func IsValidPages(rules []PageRule, pages []int) bool {
 }
 
 func main() {
-	bytes, err := os.ReadFile("input.txt")
-
-	if err != nil {
-		fmt.Println("Error opening file:", err)
-		return
-	}
-
-	file := string(bytes)
+	file, _ := util.ReadFileAsString("input.txt")
 	sectionsStr := strings.Split(file, "\n\n")
 	rulesStr := strings.Split(sectionsStr[0], "\n")
 	pagesStr := strings.Split(sectionsStr[1], "\n")

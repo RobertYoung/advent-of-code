@@ -4,60 +4,68 @@ import (
 	"testing"
 )
 
-func TestFindUniqueAntinodesPart1(t *testing.T) {
+func TestGetAntinodesPart1(t *testing.T) {
 	tests := []struct {
-		input    string
+		input    []string
 		expected int
 	}{
 		{
-			`............
-........0...
-.....0......
-.......0....
-....0.......
-......A.....
-............
-............
-........A...
-.........A..
-............
-............`, 14},
+			[]string{
+				"............",
+				"........0...",
+				".....0......",
+				".......0....",
+				"....0.......",
+				"......A.....",
+				"............",
+				"............",
+				"........A...",
+				".........A..",
+				"............",
+				"............",
+			}, 14},
 	}
 
 	for _, test := range tests {
-		result, _ := FindUniqueAntinodes(ConvertToPositions(test.input))
 
-		if result != test.expected {
-			t.Errorf("TestFindUniqueAntinodesPart1(%v) = %v; want %v", test.input, result, test.expected)
+		antennas := ConvertToAntennas(test.input)
+		result, _ := GetAntinodes(antennas, len(test.input[0]), len(test.input))
+
+		if len(result) != test.expected {
+			t.Errorf("TestGetAntinodesPart1(%v) = %v; want %v", test.input, result, test.expected)
 		}
 	}
 }
 
-func TestFindUniqueAntinodesPart2(t *testing.T) {
+func TestGetAntinodesPart2(t *testing.T) {
 	tests := []struct {
-		input    string
+		input    []string
 		expected int
 	}{
 		{
-			`............
-........0...
-.....0......
-.......0....
-....0.......
-......A.....
-............
-............
-........A...
-.........A..
-............
-............`, 34},
+			[]string{
+				"............",
+				"........0...",
+				".....0......",
+				".......0....",
+				"....0.......",
+				"......A.....",
+				"............",
+				"............",
+				"........A...",
+				".........A..",
+				"............",
+				"............",
+			}, 34},
 	}
 
 	for _, test := range tests {
-		result, _ := FindUniqueAntinodesInline(ConvertToPositions(test.input))
 
-		if result != test.expected {
-			t.Errorf("TestFindUniqueAntinodesPart2(%v) = %v; want %v", test.input, result, test.expected)
+		antennas := ConvertToAntennas(test.input)
+		_, result := GetAntinodes(antennas, len(test.input[0]), len(test.input))
+
+		if len(result) != test.expected {
+			t.Errorf("TestGetAntinodesPart2(%v) = %v; want %v", test.input, result, test.expected)
 		}
 	}
 }

@@ -2,197 +2,73 @@ package main
 
 import (
 	"fmt"
-	"os"
-	"strings"
+
+	"github.com/RobertYoung/advent-of-code/util"
 )
 
-type Position struct {
-	x        int
-	y        int
-	value    string
-	antinode bool
+func isInbound(x int, y int, maxX int, maxY int) bool {
+	return x >= 0 && x < maxX && y >= 0 && y < maxY
 }
 
-type Direction struct {
-	y    int
-	x    int
-	name string
-}
+func setAntinodes(antinodes map[[2]int]bool, dx int, dy int, x int, y int, maxX int, maxY int) map[[2]int]bool {
+	antinodes[[2]int{x, y}] = true
 
-var directionMap = map[string]Direction{
-	"up-left":    {-1, -1, "up-left"},
-	"up-right":   {-1, 1, "up-right"},
-	"down-left":  {1, -1, "down-left"},
-	"down-right": {1, 1, "down-right"},
-}
-
-func getPosition(positions [][]Position, y int, x int) (Position, bool) {
-	if y >= 0 && y < len(positions) {
-		if x >= 0 && x < len(positions[y]) {
-			return positions[y][x], true
-		}
-	}
-	return Position{}, false
-}
-
-func setAntinodes(positions [][]Position, start Position, diffY int, diffX int) bool {
-	positions[start.y][start.x].antinode = true
-
-	next, found := getPosition(positions, start.y+diffY, start.x+diffX)
-
-	if found {
-		return setAntinodes(positions, next, diffY, diffX)
+	if isInbound(x-dx, y-dy, maxX, maxY) {
+		antinodes[[2]int{x - dx, y - dy}] = true
+		setAntinodes(antinodes, dx, dy, x-dx, y-dy, maxX, maxY)
 	}
 
-	return false
+	return antinodes
 }
 
-func checkFrequency(positions [][]Position, a Position, b Position, inline bool) bool {
-	if a.value != "." && a.value == b.value {
-		diffX := b.x - a.x
-		diffY := b.y - a.y
+func GetAntinodes(antennas map[rune][][2]int, maxX int, maxY int) (map[[2]int]bool, map[[2]int]bool) {
+	antinodesPart1 := make(map[[2]int]bool)
+	antinodesPart2 := make(map[[2]int]bool)
 
-		if inline {
-			// backwards
-			positions[a.y][a.x].antinode = true
-			if position, found := getPosition(positions, a.y-diffY, a.x-diffX); found {
-				setAntinodes(positions, position, diffY, diffX)
-			}
+	for _, positions := range antennas {
+		n := len(positions)
 
-			// forwards
-			positions[b.y][b.x].antinode = true
-			if position, found := getPosition(positions, b.y+diffY, b.x+diffX); found {
-				setAntinodes(positions, position, diffY, diffX)
-			}
-		}
+		for i := 0; i < n; i++ {
+			for j := i + 1; j < n; j++ {
+				p1, p2 := positions[i], positions[j]
+				dx, dy := p2[0]-p1[0], p2[1]-p1[1]
 
-		startPosition, startFound := getPosition(positions, a.y-diffY, a.x-diffX)
+				if isInbound(p1[0]-dx, p1[1]-dy, maxX, maxY) {
+					antinodesPart1[[2]int{p1[0] - dx, p1[1] - dy}] = true
+				}
 
-		if startFound {
-			if !checkFrequency(positions, startPosition, a, inline) {
-				positions[startPosition.y][startPosition.x].antinode = true
-			}
-		}
+				if isInbound(p2[0]+dx, p2[1]+dy, maxX, maxY) {
+					antinodesPart1[[2]int{p2[0] + dx, p2[1] + dy}] = true
+				}
 
-		endPosition, endFound := getPosition(positions, b.y+diffY, b.x+diffX)
-
-		if endFound {
-			if !checkFrequency(positions, b, endPosition, inline) {
-				positions[endPosition.y][endPosition.x].antinode = true
-			}
-		}
-
-		return true
-	}
-
-	return false
-}
-
-func findNextAntenna(positions [][]Position, currPosition Position, direction Direction, inline bool) ([]Position, bool) {
-	totalAntinodes := []Position{}
-	y := currPosition.y + direction.y
-
-	for y >= 0 && y < len(positions) {
-		x := currPosition.x + direction.x
-
-		for x >= 0 && x < len(positions[y]) {
-			checkFrequency(positions, currPosition, positions[y][x], inline)
-
-			if x == (x + direction.x) {
-				break
-			}
-
-			x += direction.x
-		}
-
-		if y == (y + direction.y) {
-			break
-		}
-
-		y += direction.y
-	}
-
-	return totalAntinodes, false
-}
-
-func FindInlineAntenna(positions [][]Position, y int, x int, inline bool) Position {
-	currPosition, _ := getPosition(positions, y, x)
-
-	findNextAntenna(positions, currPosition, directionMap["up-left"], inline)
-	findNextAntenna(positions, currPosition, directionMap["up-right"], inline)
-	findNextAntenna(positions, currPosition, directionMap["down-left"], inline)
-	findNextAntenna(positions, currPosition, directionMap["down-right"], inline)
-
-	return Position{}
-}
-
-func FindUniqueAntinodes(positions [][]Position) (int, error) {
-	for y := range positions {
-		for x := range positions[y] {
-			FindInlineAntenna(positions, y, x, false)
-		}
-	}
-
-	antinodeCount := 0
-
-	for y := range positions {
-		for _, position := range positions[y] {
-			if position.antinode {
-				antinodeCount++
+				setAntinodes(antinodesPart2, dx, dy, p1[0], p1[1], maxX, maxY)
+				setAntinodes(antinodesPart2, -dx, -dy, p2[0], p2[1], maxX, maxY)
 			}
 		}
 	}
 
-	return antinodeCount, nil
+	return antinodesPart1, antinodesPart2
 }
 
-func FindUniqueAntinodesInline(positions [][]Position) (int, error) {
-	for y := range positions {
-		for x := range positions[y] {
-			FindInlineAntenna(positions, y, x, true)
-		}
-	}
+func ConvertToAntennas(grid []string) map[rune][][2]int {
+	antennas := make(map[rune][][2]int)
 
-	antinodeCount := 0
-
-	for y := range positions {
-		for _, position := range positions[y] {
-			if position.antinode {
-				antinodeCount++
+	for y, row := range grid {
+		for x, char := range row {
+			if char != '.' {
+				antennas[char] = append(antennas[char], [2]int{x, y})
 			}
 		}
 	}
 
-	return antinodeCount, nil
-}
-
-func ConvertToPositions(input string) [][]Position {
-	lines := strings.Split(input, "\n")
-	positions := [][]Position{}
-
-	for y, line := range lines {
-		positions = append(positions, []Position{})
-
-		for x, character := range strings.Split(line, "") {
-			positions[y] = append(positions[y], Position{x: x, y: y, value: character, antinode: false})
-		}
-	}
-
-	return positions
+	return antennas
 }
 
 func main() {
-	bytes, err := os.ReadFile("input.txt")
+	grid, _ := util.ReadFileAsArray("input.txt")
+	antennas := ConvertToAntennas(grid)
+	part1, part2 := GetAntinodes(antennas, len(grid[0]), len(grid))
 
-	if err != nil {
-		fmt.Println("Error opening file:", err)
-		return
-	}
-
-	file := string(bytes)
-	part1, _ := FindUniqueAntinodes(ConvertToPositions(file))
-	part2, _ := FindUniqueAntinodesInline(ConvertToPositions(file))
-
-	fmt.Println("Part 1:", part1)
-	fmt.Println("Part 2:", part2)
+	fmt.Println("Part 1", len(part1))
+	fmt.Println("Part 2", len(part2))
 }

@@ -2,9 +2,10 @@ package main
 
 import (
 	"fmt"
-	"os"
 	"slices"
 	"strings"
+
+	"github.com/RobertYoung/advent-of-code/util"
 )
 
 type Position struct {
@@ -174,15 +175,7 @@ func CountLoopObstructions(guardMap [][]string) int {
 }
 
 func main() {
-	bytes, err := os.ReadFile("input.txt")
-
-	if err != nil {
-		fmt.Println("Error opening file:", err)
-		return
-	}
-
-	file := string(bytes)
-	lines := strings.Split(file, "\n")
+	lines, _ := util.ReadFileAsArray("input.txt")
 	positions := [][]string{}
 
 	for _, line := range lines {

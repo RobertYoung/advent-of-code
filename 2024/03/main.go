@@ -2,10 +2,11 @@ package main
 
 import (
 	"fmt"
-	"os"
 	"regexp"
 	"strconv"
 	"strings"
+
+	"github.com/RobertYoung/advent-of-code/util"
 )
 
 func FixCorruptedLine(line string) [][]int {
@@ -69,17 +70,11 @@ func FixCorruptedLineConditional(line string) [][]int {
 }
 
 func main() {
-	bytes, err := os.ReadFile("input.txt")
-
-	if err != nil {
-		fmt.Println("Error opening file:", err)
-		return
-	}
+	file, _ := util.ReadFileAsString("input.txt")
 
 	var valuesPart1 [][]int
 	var valuesPart2 [][]int
 
-	file := string(bytes)
 	valuesPart1 = append(valuesPart1, FixCorruptedLine(file)...)
 	valuesPart2 = append(valuesPart2, FixCorruptedLineConditional(file)...)
 

@@ -2,10 +2,10 @@ package main
 
 import (
 	"fmt"
-	"os"
 	"regexp"
 	"strconv"
-	"strings"
+
+	"github.com/RobertYoung/advent-of-code/util"
 )
 
 type Equation struct {
@@ -80,15 +80,7 @@ func ConvertEquation(line string) (Equation, error) {
 }
 
 func main() {
-	bytes, err := os.ReadFile("input.txt")
-
-	if err != nil {
-		fmt.Println("Error opening file:", err)
-		return
-	}
-
-	file := string(bytes)
-	lines := strings.Split(file, "\n")
+	lines, _ := util.ReadFileAsArray("input.txt")
 	part1 := 0
 	part2 := 0
 
