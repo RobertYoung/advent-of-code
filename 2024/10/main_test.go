@@ -2,30 +2,9 @@ package main
 
 import (
 	"testing"
+
+	"github.com/RobertYoung/advent-of-code/util"
 )
-
-func TestConvertToPoints(t *testing.T) {
-	input := `0123
-1234
-8765
-9876`
-	result, _ := ConvertToPoints(input)
-
-	tests := []struct {
-		input    Point
-		expected int
-	}{
-		{Point{x: 0, y: 0}, 0},
-		{Point{x: 2, y: 2}, 6},
-		{Point{x: 3, y: 3}, 6},
-	}
-
-	for _, test := range tests {
-		if result[test.input] != test.expected {
-			t.Errorf("TestConvertToPoints(%v) = %v; want %v", result[test.input], result, test.expected)
-		}
-	}
-}
 
 func TestFindNumberOfTrails(t *testing.T) {
 	tests := []struct {
@@ -47,7 +26,7 @@ func TestFindNumberOfTrails(t *testing.T) {
 	}
 
 	for _, test := range tests {
-		points, _ := ConvertToPoints(test.input)
+		points, _ := util.ConvertToPoints(test.input)
 		result, _ := FindNumberOfTrails(points)
 
 		if result != test.expected {
@@ -70,7 +49,7 @@ func TestFindNumberOfDistinctTrails(t *testing.T) {
 	}
 
 	for _, test := range tests {
-		points, _ := ConvertToPoints(test.input)
+		points, _ := util.ConvertToPoints(test.input)
 		result, _ := FindNumberOfDistinctTrails(points)
 
 		if result != test.expected {

@@ -2,48 +2,11 @@ package main
 
 import (
 	"fmt"
-	"strconv"
-	"strings"
 
 	"github.com/RobertYoung/advent-of-code/util"
 )
 
-type Point struct {
-	x int
-	y int
-}
-
-type Direction struct {
-	y    int
-	x    int
-	name string
-}
-
-var directionMap = map[string]Direction{
-	"up":    {-1, 0, "up"},
-	"down":  {1, 0, "down"},
-	"left":  {0, -1, "left"},
-	"right": {0, 1, "right"},
-}
-
-func ConvertToPoints(input string) (map[Point]int, error) {
-	result := map[Point]int{}
-
-	for y, row := range strings.Split(input, "\n") {
-		for x, char := range strings.Split(row, "") {
-			value, err := strconv.Atoi(char)
-			if err == nil {
-				result[Point{x: x, y: y}] = value
-			} else {
-				result[Point{x: x, y: y}] = -1
-			}
-		}
-	}
-
-	return result, nil
-}
-
-func findTrails(trails map[Point]int, points map[Point]int, curr Point) {
+func findTrails(trails map[util.Point]int, points map[util.Point]int, curr util.Point) {
 	trailIndex := points[curr]
 	nextTrailIndex := trailIndex + 1
 
@@ -52,10 +15,10 @@ func findTrails(trails map[Point]int, points map[Point]int, curr Point) {
 		return
 	}
 
-	upPoint := Point{x: curr.x + directionMap["up"].x, y: curr.y + directionMap["up"].y}
-	downPoint := Point{x: curr.x + directionMap["down"].x, y: curr.y + directionMap["down"].y}
-	leftPoint := Point{x: curr.x + directionMap["left"].x, y: curr.y + directionMap["left"].y}
-	rightPoint := Point{x: curr.x + directionMap["right"].x, y: curr.y + directionMap["right"].y}
+	upPoint := util.Point{X: curr.X + util.DirectionMap["up"].X, Y: curr.Y + util.DirectionMap["up"].Y}
+	downPoint := util.Point{X: curr.X + util.DirectionMap["down"].X, Y: curr.Y + util.DirectionMap["down"].Y}
+	leftPoint := util.Point{X: curr.X + util.DirectionMap["left"].X, Y: curr.Y + util.DirectionMap["left"].Y}
+	rightPoint := util.Point{X: curr.X + util.DirectionMap["right"].X, Y: curr.Y + util.DirectionMap["right"].Y}
 
 	if points[upPoint] == nextTrailIndex {
 		findTrails(trails, points, upPoint)
@@ -74,7 +37,7 @@ func findTrails(trails map[Point]int, points map[Point]int, curr Point) {
 	}
 }
 
-func findDistinctTrails(trails *int, points map[Point]int, curr Point) {
+func findDistinctTrails(trails *int, points map[util.Point]int, curr util.Point) {
 	trailIndex := points[curr]
 	nextTrailIndex := trailIndex + 1
 
@@ -83,10 +46,10 @@ func findDistinctTrails(trails *int, points map[Point]int, curr Point) {
 		return
 	}
 
-	upPoint := Point{x: curr.x + directionMap["up"].x, y: curr.y + directionMap["up"].y}
-	downPoint := Point{x: curr.x + directionMap["down"].x, y: curr.y + directionMap["down"].y}
-	leftPoint := Point{x: curr.x + directionMap["left"].x, y: curr.y + directionMap["left"].y}
-	rightPoint := Point{x: curr.x + directionMap["right"].x, y: curr.y + directionMap["right"].y}
+	upPoint := util.Point{X: curr.X + util.DirectionMap["up"].X, Y: curr.Y + util.DirectionMap["up"].Y}
+	downPoint := util.Point{X: curr.X + util.DirectionMap["down"].X, Y: curr.Y + util.DirectionMap["down"].Y}
+	leftPoint := util.Point{X: curr.X + util.DirectionMap["left"].X, Y: curr.Y + util.DirectionMap["left"].Y}
+	rightPoint := util.Point{X: curr.X + util.DirectionMap["right"].X, Y: curr.Y + util.DirectionMap["right"].Y}
 
 	if points[upPoint] == nextTrailIndex {
 		findDistinctTrails(trails, points, upPoint)
@@ -105,11 +68,11 @@ func findDistinctTrails(trails *int, points map[Point]int, curr Point) {
 	}
 }
 
-func FindNumberOfTrails(points map[Point]int) (int, error) {
+func FindNumberOfTrails(points map[util.Point]int) (int, error) {
 	count := 0
 
 	for point, value := range points {
-		trails := map[Point]int{}
+		trails := map[util.Point]int{}
 
 		if value == 0 {
 			findTrails(trails, points, point)
@@ -121,7 +84,7 @@ func FindNumberOfTrails(points map[Point]int) (int, error) {
 	return count, nil
 }
 
-func FindNumberOfDistinctTrails(points map[Point]int) (int, error) {
+func FindNumberOfDistinctTrails(points map[util.Point]int) (int, error) {
 	count := 0
 
 	for point, value := range points {
@@ -139,7 +102,7 @@ func FindNumberOfDistinctTrails(points map[Point]int) (int, error) {
 
 func main() {
 	input, _ := util.ReadFileAsString("input.txt")
-	points, _ := ConvertToPoints(input)
+	points, _ := util.ConvertToPoints(input)
 	part1, _ := FindNumberOfTrails(points)
 	part2, _ := FindNumberOfDistinctTrails(points)
 
