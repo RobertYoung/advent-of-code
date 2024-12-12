@@ -8,8 +8,6 @@ import (
 	"github.com/RobertYoung/advent-of-code/util"
 )
 
-// var mapCalcs = map[int]int{}
-
 func SplitStringToNumbers(input string) ([]int, error) {
 	numbers := strings.Split(input, " ")
 	result := []int{}

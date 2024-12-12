@@ -46,9 +46,6 @@ var positionMap = map[string]PositionType{
 }
 
 func findVisitedPositions(visitedPositions map[string]VisitedPosition, guardMap [][]string, guardIndex Position, direction Direction) (map[string]VisitedPosition, bool) {
-	// reset guard position
-	// guardMap[guardIndex.y][guardIndex.x] = "."
-
 	var isDone = false
 
 	currPosition := Position{
